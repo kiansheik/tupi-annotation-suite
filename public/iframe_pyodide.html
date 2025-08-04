@@ -9,6 +9,7 @@ async function initializePython() {
     await globalPyodide.loadPackage('micropip');
     const micropip = globalPyodide.pyimport('micropip');
     await micropip.install('/tupi-annotation-suite/pydicate-0.1.1-py3-none-any.whl');
+    await micropip.install('/tupi-annotation-suite/tupi-0.1.0-py3-none-any.whl');
     globalPyodide.runPython('from pydicate.lang.tupi.pos import *;');
     // globalPyodide.runPython('print(tupi.Noun("îagûar", "normal"))');
     window.parent.postMessage({ pyodideLoaded: true }, '*');
@@ -29,7 +30,7 @@ window.addEventListener('message', async (event) => {
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(block_text, 'text/html');
             const textContent = htmlDoc.body.textContent || '';
-            const command = `from tupi import Noun; ${textContent}`;
+            const command = `from pydicate.lang.tupi.pos import *; ${textContent}`;
 
             try {
                 const [imports, expression] = command.split(';', 2);
