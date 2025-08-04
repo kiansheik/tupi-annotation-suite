@@ -26,12 +26,12 @@ export default function PyodideManager() {
   const [words] = useState<WordEntry[]>(sampleWords);
   const editorRef = useRef<CodeInputRef>(null);
 
-  const basePath = '/';
+  const basePath = '/tupi-annotation-suite/';
 
   useEffect(() => {
     async function loadJson() {
       try {
-        const response = await fetch('/tupi-annotation-suite/dict-conjugated.json.gz');
+        const response = await fetch(`${basePath}dict-conjugated.json.gz`);
         const arrayBuffer = await response.arrayBuffer();
         const decompressed = pako.inflate(new Uint8Array(arrayBuffer), { to: 'string' });
         const json = JSON.parse(decompressed);
