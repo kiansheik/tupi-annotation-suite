@@ -13,7 +13,7 @@ push:
 	git add .
 	git commit
 	git push origin HEAD
+	make deploy
 
 deploy:
-	make push
 	npm run deploy
