@@ -31,7 +31,7 @@ export default function PyodideManager() {
   useEffect(() => {
     async function loadJson() {
       try {
-        const response = await fetch('/dict-conjugated.json.gz');
+        const response = await fetch('/tupi-annotation-suite/dict-conjugated.json.gz');
         const arrayBuffer = await response.arrayBuffer();
         const decompressed = pako.inflate(new Uint8Array(arrayBuffer), { to: 'string' });
         const json = JSON.parse(decompressed);
