@@ -1,4 +1,4 @@
-<script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
 <script>
 let globalPyodide;
 let nextOrderId = 0;
@@ -29,7 +29,7 @@ window.addEventListener('message', async (event) => {
       const parser = new DOMParser();
       const htmlDoc = parser.parseFromString(block_text, 'text/html');
       const textContent = htmlDoc.body.textContent || '';
-      const command = `\n${textContent}`;
+      const command = `${textContent}`;
 
       try {
         // redirect stdout/stderr
@@ -42,7 +42,7 @@ sys.stderr = io.StringIO()
 `);
 
         let results = [];
-        const lines = command.split('\n');
+        const lines = command.split('\n'); // [command]
         for (const line of lines) {
           const trimmed = line.trim();
           if (!trimmed) continue;
