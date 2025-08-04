@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/tupi-annotation-suite/static/css/main.116d41d7.css",
-    "main.js": "/tupi-annotation-suite/static/js/main.a7a51585.js",
+    "main.js": "/tupi-annotation-suite/static/js/main.ce8c34ac.js",
     "static/js/453.abff1fcd.chunk.js": "/tupi-annotation-suite/static/js/453.abff1fcd.chunk.js",
     "index.html": "/tupi-annotation-suite/index.html",
     "main.116d41d7.css.map": "/tupi-annotation-suite/static/css/main.116d41d7.css.map",
-    "main.a7a51585.js.map": "/tupi-annotation-suite/static/js/main.a7a51585.js.map",
+    "main.ce8c34ac.js.map": "/tupi-annotation-suite/static/js/main.ce8c34ac.js.map",
     "453.abff1fcd.chunk.js.map": "/tupi-annotation-suite/static/js/453.abff1fcd.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.116d41d7.css",
-    "static/js/main.a7a51585.js"
+    "static/js/main.ce8c34ac.js"
   ]
 }
