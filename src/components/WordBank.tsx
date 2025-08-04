@@ -117,8 +117,8 @@ export default function WordBank({ onInsert, onUpdate, words: wordsProp }: Props
                 <span
                   onClick={() => {
                     let args = `"${w.form}"`;
-                    if (w.definition) args += `, "definition=${w.definition}"`;
-                    if (w.tag) args += `, "tag=${w.tag}"`;
+                    if (w.definition) args += `, definition="${w.definition}"`;
+                    if (w.tag) args += `, tag="${w.tag}"`;
                     onUpdate?.(`${w.lemma} = ${w.type}(${args})`);
                     onInsert?.(w.lemma); // insert name at cursor
                   }}

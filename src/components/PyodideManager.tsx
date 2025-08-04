@@ -62,6 +62,9 @@ export default function PyodideManager() {
     if (event.data.pyodideLoaded) {
       setPyodideLoaded(true);
       console.log('Pyodide Loaded!');
+      replaySavedWords((text) => {
+        runPythonCode(`${text}\n`);
+      });
     } else if (event.data.command === 'processBlockResponse') {
       const resp = event.data.resp_html || '[no output]';
       setOutput(resp);
@@ -109,6 +112,24 @@ const extractAndSaveWord = (html: string) => {
       console.log('Saved new word:', newEntry);
       return updated;
     });
+  }
+};
+
+// Reload all saved words when pyodide becomes ready
+const replaySavedWords = (onUpdate: (text: string) => void) => {
+  const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+  if (!saved) return;
+
+  try {
+    const wordList: WordEntry[] = JSON.parse(saved);
+    wordList.forEach((w) => {
+      let args = `"${w.form}"`;
+      if (w.definition) args += `, definition="${w.definition}"`;
+      if (w.tag) args += `, tag="${w.tag}"`;
+      onUpdate(`${w.lemma} = ${w.type}(${args})`);
+    });
+  } catch (err) {
+    console.error('Failed to replay saved words:', err);
   }
 };
 
