@@ -1,0 +1,72 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.code-editor {
+  outline: none;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* Dark background */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #1e1e1e;
+  color: #eaeaea;
+  font-family: 'Fira Code', monospace;
+}
+
+/* Headings */
+h1, h2, h3 {
+  color: #ffcc66;
+}
+
+/* Buttons */
+button {
+  background-color: #333;
+  color: #f8f8f2;
+  border: 1px solid #555;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: #444;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Output box */
+pre {
+  background-color: #111;
+  color: #0f0;
+  padding: 1em;
+  white-space: pre-wrap;
+  border-radius: 4px;
+  border: 1px solid #444;
+}
+
+pre {
+  background: #1e1e1e;
+  border-left: 4px solid #ffcc66;
+  padding: 1em;
+  font-family: 'Fira Code', monospace;
+}
+
