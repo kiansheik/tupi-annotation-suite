@@ -6,7 +6,7 @@ REPOSITORY=""
 FULL_IMAGE_NAME=${IMAGE_NAME}:${TAG_NAME}
 
 lint:
-	echo 'kiansheik.io' > CNAME
+	echo 'kiansheik.io' > public/CNAME
 
 push:
 	make lint
