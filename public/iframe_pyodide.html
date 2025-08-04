@@ -4,26 +4,25 @@ let globalPyodide;
 let nextOrderId = 0;
 let messageQueue = [];
 
-// async function initializePython() {
-//     globalPyodide = await loadPyodide();
-//     await globalPyodide.loadPackage('micropip');
-//     const micropip = globalPyodide.pyimport('micropip');
-//     await micropip.install('/tupi-annotation-suite/tupi-0.1.0-py3-none-any.whl');
-//     await micropip.install('/tupi-annotation-suite/pydicate-0.1.1-py3-none-any.whl');
-//     // globalPyodide.runPython('print(tupi.Noun("îagûar", "normal"))');
-//     this.pyodideReady = true;
-//     window.parent.postMessage({ pyodideLoaded: true }, '*');
-// }
 async function initializePython() {
     globalPyodide = await loadPyodide();
     await globalPyodide.loadPackage('micropip');
     const micropip = globalPyodide.pyimport('micropip');
-    await micropip.install('https://kiansheik.io/nhe-enga/gramatica/pylibs/tupi-0.1.0-py3-none-any.whl');
-    globalPyodide.runPython('import tupi');
-    globalPyodide.runPython('print(tupi.Noun(\'îagûar\', \'normal\'))');
+    await micropip.install(['/tupi-annotation-suite/tupi-0.1.0-py3-none-any.whl', "/tupi-annotation-suite/pydicate-0.1.1-py3-none-any.whl"]);
+    // globalPyodide.runPython('print(tupi.Noun("îagûar", "normal"))');
     this.pyodideReady = true;
     window.parent.postMessage({ pyodideLoaded: true }, '*');
 }
+// async function initializePython() {
+//     globalPyodide = await loadPyodide();
+//     await globalPyodide.loadPackage('micropip');
+//     const micropip = globalPyodide.pyimport('micropip');
+//     await micropip.install('https://kiansheik.io/nhe-enga/gramatica/pylibs/tupi-0.1.0-py3-none-any.whl');
+//     globalPyodide.runPython('import tupi');
+//     globalPyodide.runPython('print(tupi.Noun(\'îagûar\', \'normal\'))');
+//     this.pyodideReady = true;
+//     window.parent.postMessage({ pyodideLoaded: true }, '*');
+// }
 
 window.addEventListener('message', async (event) => {
     if (event.data.command === 'processBlock') {
