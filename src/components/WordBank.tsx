@@ -61,7 +61,7 @@ export default function WordBank({ onInsert, onUpdate, words: wordsProp }: Props
           onChange={(e) => setForm({ ...form, form: e.target.value })}
         />
         <input
-          placeholder="Lemma"
+          placeholder="Variable Name"
           value={form.lemma || ''}
           onChange={(e) => setForm({ ...form, lemma: e.target.value })}
         />
@@ -103,7 +103,7 @@ export default function WordBank({ onInsert, onUpdate, words: wordsProp }: Props
         <thead>
           <tr>
             <th>Form</th>
-            <th>Lemma</th>
+            <th>Variable Name</th>
             <th>Type</th>
             <th>Definition</th>
             <th>Tag</th>
@@ -111,7 +111,13 @@ export default function WordBank({ onInsert, onUpdate, words: wordsProp }: Props
         </thead>
         <tbody>
           {filtered.map((w, i) => (
-            <tr key={i} style={{ borderBottom: '1px solid #333' }}>
+            <tr
+              key={i}
+              style={{
+                borderBottom: '1px solid #333',
+                backgroundColor: i % 2 === 0 ? 'rgb(28 28 28)' : 'rgb(28 28 28 / 75%)',
+              }}
+            >
               <td>{w.form}</td>
               <td>
                 <span
