@@ -1,0 +1,80 @@
+<script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+<script>
+let globalPyodide;
+let nextOrderId = 0;
+let messageQueue = [];
+
+async function initializePython() {
+    globalPyodide = await loadPyodide();
+    await globalPyodide.loadPackage('micropip');
+    const micropip = globalPyodide.pyimport('micropip');
+    await micropip.install('https://kiansheik.io/nhe-enga/gramatica/pylibs/tupi-0.1.0-py3-none-any.whl');
+    globalPyodide.runPython('import tupi');
+    globalPyodide.runPython('print(tupi.Noun("îagûar", "normal"))');
+    window.parent.postMessage({ pyodideLoaded: true }, '*');
+}
+
+window.addEventListener('message', async (event) => {
+    if (event.data.command === 'processBlock') {
+        messageQueue.push(event.data);
+        messageQueue.sort((a, b) => a.orderid - b.orderid);
+
+        if (messageQueue.length > 0 && nextOrderId > messageQueue[0].orderid) {
+            nextOrderId = 0;
+        }
+
+        while (messageQueue.length > 0 && messageQueue[0].orderid === nextOrderId) {
+            let data = messageQueue.shift();
+            const block_text = data.html;
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(block_text, 'text/html');
+            const textContent = htmlDoc.body.textContent || '';
+            const command = `from tupi import Noun; ${textContent}`;
+
+            try {
+                const [imports, expression] = command.split(';', 2);
+                globalPyodide.runPython(imports);
+
+                globalPyodide.runPython(`
+import sys, io
+_stdout = sys.stdout
+_stderr = sys.stderr
+sys.stdout = io.StringIO()
+sys.stderr = io.StringIO()
+`);
+
+                globalPyodide.runPython(expression.trim());
+
+                const stdout = globalPyodide.runPython("sys.stdout.getvalue()");
+                const stderr = globalPyodide.runPython("sys.stderr.getvalue()");
+
+                globalPyodide.runPython(`
+sys.stdout = _stdout
+sys.stderr = _stderr
+`);
+
+                const fullOutput = (stdout || '') + (stderr ? `\n[stderr]\n${stderr}` : '');
+
+                window.parent.postMessage({
+                    command: "processBlockResponse",
+                    pre_html: block_text,
+                    resp_html: fullOutput,
+                    hash: data.hash
+                }, '*');
+            } catch (error) {
+                console.error(error);
+                window.parent.postMessage({
+                    command: "processBlockResponse",
+                    pre_html: block_text,
+                    resp_html: `ERROR: ${error.toString()}`,
+                    hash: data.hash
+                }, '*');
+            }
+
+            nextOrderId++;
+        }
+    }
+});
+
+initializePython();
+</script>
