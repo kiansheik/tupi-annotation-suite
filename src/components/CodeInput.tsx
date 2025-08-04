@@ -42,17 +42,8 @@ const CodeInput = forwardRef<CodeInputRef, Props>(({ onSubmit, disabled }, ref) 
     if (selectedText?.trim()) {
       onSubmit(selectedText);
     } else {
-      // fallback: run current line
-      const cursorPos = selection?.anchorOffset ?? 0;
-      const lines = code.split('\n');
-      let charCount = 0;
-      for (let i = 0; i < lines.length; i++) {
-        charCount += lines[i].length + 1;
-        if (cursorPos <= charCount) {
-          onSubmit(lines[i]);
-          break;
-        }
-      }
+      // fallback: run all code
+      onSubmit(code);
     }
   };
 
