@@ -33,8 +33,8 @@ export default function WordBank({ onInsert, onUpdate, words: wordsProp }: Props
 
       // Automatically define it in Python session
       let args = `"${form.form}"`;
-      if (form.definition) args += `, "definition=${form.definition}"`;
-      if (form.tag) args += `, "tag=${form.tag}"`;
+      if (form.definition) args += `, definition="${form.definition}"`;
+      if (form.tag) args += `, tag="${form.tag}"`;
       onUpdate?.(`${form.lemma} = ${form.type}(${args})`);
     }
     setForm({});
