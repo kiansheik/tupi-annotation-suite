@@ -8,9 +8,9 @@ async function initializePython() {
     globalPyodide = await loadPyodide();
     await globalPyodide.loadPackage('micropip');
     const micropip = globalPyodide.pyimport('micropip');
-    await micropip.install('https://kiansheik.io/nhe-enga/gramatica/pylibs/pydicate-0.1.1-py3-none-any.whl');
-    globalPyodide.runPython('import tupi');
-    globalPyodide.runPython('print(tupi.Noun("îagûar", "normal"))');
+    await micropip.install('/pydicate-0.1.1-py3-none-any.whl');
+    globalPyodide.runPython('import pydicate');
+    // globalPyodide.runPython('print(tupi.Noun("îagûar", "normal"))');
     window.parent.postMessage({ pyodideLoaded: true }, '*');
 }
 
