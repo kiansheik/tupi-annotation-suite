@@ -8,7 +8,7 @@ import WordBank from './WordBank';
 import { WordEntry, WordType } from '../types/WordEntry';
 
 interface ProcessBlockMessage {
-  command: 'processBlock';
+  command: 'processBlock' | 'processBlockSilent';
   orderid: number;
   hash: string;
   html: string;
@@ -54,30 +54,61 @@ export default function PyodideManager() {
 
   useEffect(() => {
     if (pyodideLoaded && dictLoaded && !pyodideReady) {
-      setPyodideReady(true);
+        // 👇 Load built-in predicates after everything is ready
+        setTimeout(preloadLibraryPredicates, 500);
+        setPyodideReady(true);
     }
   }, [pyodideLoaded, dictLoaded, pyodideReady]);
 
   const receiveMessage = (event: MessageEvent) => {
+    console.log('Received message:', event.data);
     if (event.data.pyodideLoaded) {
       setPyodideLoaded(true);
       console.log('Pyodide Loaded!');
-      replaySavedWords((text) => {
-        runPythonCode(`${text}\n`);
-      });
     } else if (event.data.command === 'processBlockResponse') {
       const resp = event.data.resp_html || '[no output]';
       setOutput(resp);
       extractAndSaveWord(event.data.pre_html);
+    } else if (event.data.command === 'processBlockResponseSilent') {
+      const resp = event.data.resp_html || '[no output]';
+      console.log('Silent response received.');
+      extractAndSaveWord(resp);
+      console.log('Extracted and saved word from silent response.');
     }
   };
 
-const extractAndSaveWord = (html: string) => {
-  const code = html.replace(/<[^>]*>/g, '').trim();
-  const lines = code.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+const preloadLibraryPredicates = () => {
+  const code = `
+import json
+from pydicate import Predicate
+instances = [p.simple_signature() for p in Predicate.instances()]
+print(json.dumps(instances))
+`;
+  runPythonCode(code, true, true); // true = don't overwrite output
+};
 
+
+const extractAndSaveWord = (input: string) => {
+  let lines: string[] = [];
+
+  try {
+    //Split input on the last \n and only keep [0]
+    input = input.split('\n').slice(0, -1).join('\n').trim();
+    if (!input) return;
+    // Try to parse the input as JSON array
+    const parsed = JSON.parse(input);
+    if (Array.isArray(parsed) && parsed.every(line => typeof line === 'string')) {
+      lines = parsed.map(line => line.trim()).filter(Boolean);
+    } else {
+      throw new Error('Invalid JSON format');
+    }
+  } catch {
+    // Fallback to plain text parsing
+    const code = input.replace(/<[^>]*>/g, '').trim();
+    lines = code.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+  }
+  console.log('Extracted lines for word saving:', lines);
   for (const line of lines) {
-    // Updated: Allow accented characters in lemma
     if (!/^[\p{L}_][\p{L}\p{N}_]*\s*=\s*[A-Z][a-zA-Z_]*\s*\(/u.test(line)) continue;
 
     const mainPattern = /^([\p{L}_][\p{L}\p{N}_]*)\s*=\s*([A-Z][a-zA-Z_]+)\(\s*"([^"]+)"(?:\s*,\s*(.*))?\)/u;
@@ -115,6 +146,7 @@ const extractAndSaveWord = (html: string) => {
   }
 };
 
+
 // Reload all saved words when pyodide becomes ready
 const replaySavedWords = (onUpdate: (text: string) => void) => {
   const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -134,19 +166,25 @@ const replaySavedWords = (onUpdate: (text: string) => void) => {
 };
 
 
-  const runPythonCode = (inputCode: string) => {
-    if (!inputCode.trim()) return;
-    setOutput('');
-    const hash = `input-${Date.now()}`;
-    const message: ProcessBlockMessage = {
-      command: 'processBlock',
-      orderid: orderId,
-      hash,
-      html: `<pre>${String(inputCode)}</pre>`,
+    const runPythonCode = (inputCode: string, silent: boolean = false, initial: boolean = false) => {
+        if (!inputCode.trim()) return;
+        const hash = `input-${Date.now()}`;
+        let comm: 'processBlock' | 'processBlockSilent' = 'processBlock';
+        if (initial) {
+            comm = 'processBlockSilent';
+        }
+        const message: ProcessBlockMessage = {
+            command: comm,
+            orderid: orderId,
+            hash,
+            html: `<pre>${String(inputCode)}</pre>`,
+        };
+        iframeRef.current?.contentWindow?.postMessage(message, '*');
+        if (!silent) {
+            setOutput(''); // only clear output for user-submitted code
+        }
+        setOrderId(orderId + 1);
     };
-    iframeRef.current?.contentWindow?.postMessage(message, '*');
-    setOrderId(orderId + 1);
-  };
 
   return (
     <div>

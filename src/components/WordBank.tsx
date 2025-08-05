@@ -125,7 +125,9 @@ export default function WordBank({ onInsert, onUpdate, words: wordsProp }: Props
                     let args = `"${w.form}"`;
                     if (w.definition) args += `, definition="${w.definition}"`;
                     if (w.tag) args += `, tag="${w.tag}"`;
-                    onUpdate?.(`${w.lemma} = ${w.type}(${args})`);
+                    let upd = `${w.lemma} = ${w.type}(${args})`
+                    // console.log('Inserting word:', upd);
+                    // onUpdate?.(upd);
                     onInsert?.(w.lemma); // insert name at cursor
                   }}
                   style={{
