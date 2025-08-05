@@ -15,7 +15,7 @@ async function initializePython() {
 }
 
 window.addEventListener('message', async (event) => {
-  if (event.data.command === 'processBlock') {
+if (event.data && event.data.command && event.data.command.includes('processBlock')) {
     messageQueue.push(event.data);
     messageQueue.sort((a, b) => a.orderid - b.orderid);
 
@@ -76,10 +76,14 @@ sys.stderr = _stderr
         ]
           .filter(Boolean)
           .join('\n');
-
+        let resp_command = 'processBlockResponse';
+        // if Silent in command string, append to resp_command
+        if (data.command === 'processBlockSilent') {
+          resp_command += 'Silent';
+        }
         window.parent.postMessage(
           {
-            command: "processBlockResponse",
+            command: resp_command,
             pre_html: block_text,
             resp_html: fullOutput,
             hash: data.hash,
