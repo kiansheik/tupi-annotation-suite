@@ -8,7 +8,7 @@ async function initializePython() {
     globalPyodide = await loadPyodide();
     await globalPyodide.loadPackage('micropip');
     const micropip = globalPyodide.pyimport('micropip');
-    await micropip.install(['/tupi-annotation-suite/tupi-0.1.2-py3-none-any.whl', '/tupi-annotation-suite/pydicate-0.1.1-py3-none-any.whl']);
+    await micropip.install(['sqlite3','/tupi-annotation-suite/tupi-0.1.2-py3-none-any.whl', '/tupi-annotation-suite/pydicate-0.1.1-py3-none-any.whl']);
     globalPyodide.runPython(`from pydicate.lang.tupilang.pos import *;`);
     this.pyodideReady = true;
     window.parent.postMessage({ pyodideLoaded: true }, '*');
