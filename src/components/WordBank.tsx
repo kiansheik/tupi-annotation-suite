@@ -65,11 +65,23 @@ export default function WordBank({ onInsert, onUpdate, words: wordsProp }: Props
           value={form.lemma || ''}
           onChange={(e) => setForm({ ...form, lemma: e.target.value })}
         />
-        <input
-          placeholder="Type (e.g., Noun)"
+        <select
           value={form.type || ''}
           onChange={(e) => setForm({ ...form, type: e.target.value as WordType })}
-        />
+          style={{ marginRight: '8px' }}
+        >
+          <option value="">Select Type</option>
+          <option value="Noun">Noun</option>
+          <option value="ProperNoun">ProperNoun</option>
+          <option value="Verb">Verb</option>
+          <option value="Particle">Particle</option>
+          <option value="Adverb">Adverb</option>
+          <option value="Pronoun">Pronoun</option>
+          <option value="Postposition">Postposition</option>
+          <option value="Conjunction">Conjunction</option>
+          <option value="Interjection">Interjection</option>
+          {/* Add more types as needed */}
+        </select>
         <input
           placeholder="Definition"
           value={form.definition || ''}

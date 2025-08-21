@@ -85,6 +85,8 @@ instances = [p.simple_signature() for p in Predicate.instances()]
 print(json.dumps(instances))
 `;
   runPythonCode(code, true, true); // true = don't overwrite output
+  // Call replaySavedWords when pyodide is ready
+  replaySavedWords((text) => runPythonCode(`${text}\n`, true, true));
 };
 
 
